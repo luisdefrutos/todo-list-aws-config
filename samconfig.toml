@@ -12,7 +12,7 @@ image_repositories = []
 resolve_s3 = true
 confirm_changeset = true
 
-<<<<<<< HEAD
+
  
 [production]
 [production.deploy]
@@ -24,7 +24,7 @@ region = "us-east-1"
 capabilities = "CAPABILITY_IAM"
 parameter_overrides = "Stage=\"production\""
 image_repositories = []
-=======
+
 [staging]
 [staging.deploy]
 [staging.deploy.parameters]
@@ -37,4 +37,4 @@ parameter_overrides = "Stage=\"staging\""
 image_repositories = []
 
 
->>>>>>> 0ea1b52 (Update samconfig.toml Remove production)
+
