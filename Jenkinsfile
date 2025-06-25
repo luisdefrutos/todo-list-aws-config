@@ -50,13 +50,13 @@ pipeline {
         }
 
         // Opcional: descomenta esto si tienes JMeter instalado
-        /*
+       
         stage('Pruebas de rendimiento (JMeter)') {
             steps {
                 sh 'jmeter -n -t tests/jmeter/mi_test.jmx -l results.jtl || true'
             }
         }
-        */
+        
     }
 
     post {
