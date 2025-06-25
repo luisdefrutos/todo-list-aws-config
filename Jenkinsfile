@@ -3,12 +3,13 @@ pipeline {
 
     environment {
         SAM_CONFIG_ENV = "${env.BRANCH_NAME}"
+        PYTHONPATH = "${env.WORKSPACE}/src"
     }
 
     stages {
         stage('Mostrar configuración') {
             steps {
-                echo " Desplegando usando entorno: ${SAM_CONFIG_ENV}"
+                echo "Desplegando usando entorno: ${SAM_CONFIG_ENV}"
                 sh 'cat samconfig.toml'
             }
         }
@@ -23,14 +24,51 @@ pipeline {
                 """
             }
         }
+
+        stage('Flake8') {
+            steps {
+                sh 'flake8 src test || true'
+            }
+        }
+
+        stage('Bandit') {
+            steps {
+                sh 'bandit -r src || true'
+            }
+        }
+
+        stage('Tests Unitarios') {
+            steps {
+                sh 'pytest test/unit || true'
+            }
+        }
+
+        stage('Tests de Integración') {
+            steps {
+                sh 'pytest test/integration || true'
+            }
+        }
+
+        // Opcional: descomenta esto si tienes JMeter instalado
+        /*
+        stage('Pruebas de rendimiento (JMeter)') {
+            steps {
+                sh 'jmeter -n -t tests/jmeter/mi_test.jmx -l results.jtl || true'
+            }
+        }
+        */
     }
 
     post {
+        always {
+            echo 'Limpieza de entorno de trabajo'
+            cleanWs()
+        }
         success {
-            echo "Despliegue completado correctamente en ${SAM_CONFIG_ENV}"
+            echo "Despliegue y pruebas completadas correctamente en ${SAM_CONFIG_ENV}"
         }
         failure {
-            echo "Error durante el despliegue en ${SAM_CONFIG_ENV}"
+            echo "Error durante el pipeline en ${SAM_CONFIG_ENV}"
         }
     }
 }
