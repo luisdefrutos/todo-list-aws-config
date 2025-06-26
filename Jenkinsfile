@@ -48,7 +48,8 @@ pipeline {
 
         stage('Tests Unitarios') {
             steps {
-                sh 'pytest test/unit/*.py || true'
+                // 
+                sh 'PYTHONPATH=src pytest test/unit/*.py || true'
             }
         }
 
