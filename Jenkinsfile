@@ -28,13 +28,13 @@ pipeline {
 
         stage('Flake8') {
             steps {
-               sh 'python3 -m flake8 src test || true'
+                sh 'flake8 src test || true'
             }
         }
 
         stage('Bandit') {
             steps {
-                sh 'python3 -m bandit -r src || true'
+                sh 'bandit -r src || true'
             }
         }
 
@@ -50,14 +50,11 @@ pipeline {
             }
         }
 
-        // Opcional: descomenta esto si tienes JMeter instalado
-       
         stage('Pruebas de rendimiento (JMeter)') {
             steps {
                 sh 'jmeter -n -t test/jmeter/jmeter.jmx -l results.jtl || true'
             }
         }
-        
     }
 
     post {
