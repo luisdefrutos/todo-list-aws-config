@@ -28,13 +28,13 @@ pipeline {
 
         stage('Flake8') {
             steps {
-                sh 'flake8 src test || true'
+               sh 'python3 -m flake8 src test || true'
             }
         }
 
         stage('Bandit') {
             steps {
-                sh 'bandit -r src || true'
+                sh 'python3 -m bandit -r src || true'
             }
         }
 
