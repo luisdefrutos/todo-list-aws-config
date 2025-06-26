@@ -54,7 +54,7 @@ pipeline {
         
         stage('Pruebas de rendimiento (JMeter)') {
             steps {
-                sh 'jmeter -n -t tests/jmeter/mi_test.jmx -l results.jtl || true'
+                sh 'jmeter -n -t test/jmeter/mi_test.jmx -l results.jtl || true'
             }
         }
         
