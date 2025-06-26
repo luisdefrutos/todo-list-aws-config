@@ -40,13 +40,13 @@ pipeline {
 
         stage('Tests Unitarios') {
             steps {
-                sh 'pytest test/unit || true'
+                sh 'pytest test/unit/*.py || true'
             }
         }
 
         stage('Tests de Integración') {
             steps {
-                sh 'pytest test/integration || true'
+                sh 'pytest test/integration/*.py || true'
             }
         }
 
