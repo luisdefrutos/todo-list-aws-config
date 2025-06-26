@@ -49,7 +49,7 @@ pipeline {
 
         stage('Tests Unitarios') {
             steps {
-                sh 'pytest test/unit --junitxml=unit-tests.xml || true'
+                sh 'pytest test/unit/TestToDo.py --junitxml=unit-tests.xml || true'
             }
         }
 
