@@ -55,7 +55,7 @@ pipeline {
 
         stage('Tests de Integración') {
             steps {
-                sh 'pytest test/integration/TestAPI.py --junitxml=integration-tests.xml || true'
+                sh 'pytest test/integration/todoApiTest.py --junitxml=integration-tests.xml || true'
             }
         }
 
