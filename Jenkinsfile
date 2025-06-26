@@ -20,12 +20,12 @@ pipeline {
 
         stage('Desplegar con SAM') {
             steps {
-                sh """
+                sh '''
                     sam deploy \
                     --config-env ${SAM_CONFIG_ENV} \
                     --no-confirm-changeset \
                     --no-fail-on-empty-changeset
-                """
+                '''
             }
         }
 
@@ -61,10 +61,10 @@ pipeline {
 
         stage('Pruebas de rendimiento (JMeter)') {
             steps {
-                 sh '''
+                sh '''
                     rm -rf jmeter-report
                     jmeter -n -t test/jmeter/jmeter.jmx -l results.jtl -e -o jmeter-report || true
-                  '''
+                '''
             }
         }
     }
@@ -78,13 +78,35 @@ pipeline {
             archiveArtifacts artifacts: 'integration-tests.xml', allowEmptyArchive: true
             archiveArtifacts artifacts: 'results.jtl', allowEmptyArchive: true
             archiveArtifacts artifacts: 'jmeter-report/**', allowEmptyArchive: true
+
             junit 'unit-tests.xml'
             junit 'integration-tests.xml'
+
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'jmeter-report',
+                reportFiles: 'index.html',
+                reportName: 'Reporte de Rendimiento (JMeter)'
+            ])
+
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: '.',
+                reportFiles: 'bandit-report.html',
+                reportName: 'Análisis de Seguridad (Bandit)'
+            ])
+
             cleanWs()
         }
+
         success {
             echo "Despliegue y pruebas completadas correctamente en ${SAM_CONFIG_ENV}"
         }
+
         failure {
             echo "Error durante el pipeline en ${SAM_CONFIG_ENV}"
         }
