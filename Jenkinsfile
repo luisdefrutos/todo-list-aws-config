@@ -4,7 +4,7 @@ pipeline {
     environment {
         SAM_CONFIG_ENV = "${env.BRANCH_NAME}"
         PYTHONPATH = "${env.WORKSPACE}/src"
-        PATH = "/home/ubuntu/.local/bin:/opt/jmeter/bin:${env.PATH}"
+        PATH = "/home/ubuntu/.local/bin:/usr/local/bin:/opt/jmeter/bin:${env.PATH}"
     }
 
     stages {
