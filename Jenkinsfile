@@ -61,7 +61,10 @@ pipeline {
 
         stage('Pruebas de rendimiento (JMeter)') {
             steps {
-                sh 'jmeter -n -t test/jmeter/jmeter.jmx -l results.jtl -e -o jmeter-report || true'
+                sh '''
+                    rm -rf jmeter-report
+                    jmeter -n -t test/jmeter/jmeter.jmx -l results.jtl -e -o jmeter-report || true
+                  '''
             }
         }
     }
