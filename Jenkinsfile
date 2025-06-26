@@ -3,10 +3,10 @@ pipeline {
 
     environment {
         SAM_CONFIG_ENV = "${env.BRANCH_NAME}"
-        PYTHONPATH = "${env.WORKSPACE}/src"
+        PYTHONPATH = "${env.WORKSPACE}"
         PATH = "/home/ubuntu/.local/bin:/usr/local/bin:/opt/jmeter/bin:${env.PATH}"
         BASE_URL = "${env.BRANCH_NAME == 'staging' ? 'https://yn2a1djoil.execute-api.us-east-1.amazonaws.com/Stage' : 'https://yn2a1djoil.execute-api.us-east-1.amazonaws.com/Prod'}"
-        DYNAMODB_TABLE = 'ToDoTable' 
+        DYNAMODB_TABLE = 'ToDoTable'
     }
 
     stages {
@@ -37,32 +37,31 @@ pipeline {
 
         stage('Flake8') {
             steps {
-                sh 'flake8 src test || true'
+                sh 'flake8 src test > flake8-report.txt || true'
             }
         }
 
         stage('Bandit') {
             steps {
-                sh 'bandit -r src || true'
+                sh 'bandit -r src -f html -o bandit-report.html || true'
             }
         }
 
         stage('Tests Unitarios') {
             steps {
-                // 
-                sh 'PYTHONPATH=$WORKSPACE pytest test/unit/*.py || true'
+                sh 'pytest test/unit --junitxml=unit-tests.xml || true'
             }
         }
 
         stage('Tests de Integración') {
             steps {
-                sh 'pytest test/integration/*.py || true'
+                sh 'pytest test/integration --junitxml=integration-tests.xml || true'
             }
         }
 
         stage('Pruebas de rendimiento (JMeter)') {
             steps {
-                sh 'jmeter -n -t test/jmeter/jmeter.jmx -l results.jtl || true'
+                sh 'jmeter -n -t test/jmeter/jmeter.jmx -l results.jtl -e -o jmeter-report || true'
             }
         }
     }
@@ -70,6 +69,14 @@ pipeline {
     post {
         always {
             echo 'Limpieza de entorno de trabajo'
+            archiveArtifacts artifacts: 'flake8-report.txt', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'bandit-report.html', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'unit-tests.xml', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'integration-tests.xml', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'results.jtl', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'jmeter-report/**', allowEmptyArchive: true
+            junit 'unit-tests.xml'
+            junit 'integration-tests.xml'
             cleanWs()
         }
         success {
