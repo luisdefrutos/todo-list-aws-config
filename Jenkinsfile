@@ -30,7 +30,7 @@ pipeline {
 
         stage('Instalar dependencias') {
             steps {
-                sh 'pip install --user boto3 pytest flake8 bandit moto'
+                sh 'pip install --user boto3 pytest flake8 bandit "moto<5.0.0"'
             }
         }
 
