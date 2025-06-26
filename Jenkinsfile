@@ -6,6 +6,7 @@ pipeline {
         PYTHONPATH = "${env.WORKSPACE}/src"
         PATH = "/home/ubuntu/.local/bin:/usr/local/bin:/opt/jmeter/bin:${env.PATH}"
         BASE_URL = "${env.BRANCH_NAME == 'staging' ? 'https://yn2a1djoil.execute-api.us-east-1.amazonaws.com/Stage' : 'https://yn2a1djoil.execute-api.us-east-1.amazonaws.com/Prod'}"
+        DYNAMODB_TABLE = 'ToDoTable' 
     }
 
     stages {
