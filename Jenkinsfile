@@ -28,6 +28,12 @@ pipeline {
             }
         }
 
+        stage('Instalar dependencias') {
+            steps {
+                sh 'pip install --user boto3 pytest flake8 bandit'
+            }
+        }
+
         stage('Flake8') {
             steps {
                 sh 'flake8 src test || true'
