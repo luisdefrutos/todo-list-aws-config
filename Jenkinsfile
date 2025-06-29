@@ -18,6 +18,16 @@ pipeline {
             }
         }
 
+     stage('Identificar agente') {
+            steps {
+                echo 'Identificando el agente de ejecución...'
+                sh 'whoami'
+                sh 'hostname'
+            }
+        }
+
+
+
         stage('Desplegar con SAM') {
             steps {
                 sh '''
